@@ -28,8 +28,6 @@ AudioControlSGTL5000     audioShield;
 AudioOutputI2S           i2s_out;
 // AudioOutputUSB					 usb_out;
 
-
-
 // Input --
 // Output (TgOut,0)
 DrawbarOsc              osc[TOTAL_VOICES];
@@ -70,13 +68,14 @@ AudioConnection patchTg[] = {
 TwWavetable WaveTab[2]; //Wavetable OM, UM
 VoiceTable VoiceTab[2](MANUAL_VOICES); //Tables for note -> voice conversion
 
-// uint8_t OM_initRegister[9]={6,8,8,8,0,0,0,0,0};
-uint8_t OM_initRegister[9]={6,8,8,8,8,8,8,8,8};
-uint8_t UM_initRegister[9]={8,6,8,4,0,0,0,0,0};
+// uint8_t OM_initRegister[9]={6,8,8,6,0,0,0,0,0};
+uint8_t OM_initRegister[9]={6,5,4,6,0,0,0,0,5};
+// uint8_t OM_initRegister[9]={8,8,8,8,8,8,8,8,8};
+uint8_t UM_initRegister[9]={6,8,8,6,0,0,0,0,0};
 
 void AudioInit(){
 	AudioMemory(35);
-	
+
 	//--- Tonegenerators
 	WaveTab[0].SetRegister(OM_initRegister);
 	WaveTab[1].SetRegister(UM_initRegister);
@@ -84,10 +83,10 @@ void AudioInit(){
 //--- for each osc+envelope
 	for (int i=0; i<TOTAL_VOICES; ++i){
 		patchOsc[i]=new AudioConnection(osc[i],envelope[i]);
-		envelope[i].attack(0.5);
+		envelope[i].attack(0.7);
 		envelope[i].decay(0.0);
 		envelope[i].sustain(1.0);
-		envelope[i].release(0.5);
+		envelope[i].release(0.7);
 
 		if (i<MANUAL_VOICES) { // UpperM
 			osc[i].setWavetab(&WaveTab[0]);

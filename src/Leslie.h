@@ -19,7 +19,8 @@ AudioFilterStateVariable filterL, filterR; //modulation filter
 
 AudioAmplifier  LslInput;          // input node
 AudioEffectWaveshaper LslWavesh;        // not really
-AudioFilterStateVariable filterX;  // crossover Filter - Input
+
+AudioFilterStateVariable filterDist,filterX;  // crossover Filter - Input
 // AudioEffectDelay delayBs, delayTg; // just for a littel phase spread
 AudioEffectDelay delayBs;
 AudioMixer4 LslOutL, LslOutR;      // output mixer
@@ -29,13 +30,15 @@ AudioAnalyzePeak LslInputPk; // Input Monitor
 AudioConnection patchLsl[] = {
   {LslInput,LslInputPk}, //monitor input
 	{LslInput,LslWavesh},
-	{LslWavesh,filterX},
-  {LslWavesh, 0, LslOutL, 2},
-  {LslWavesh, 0, LslOutR, 2},
+  {LslWavesh,filterDist},
 
-	{filterX,2,modEnvL,0},  // Audio: filter HP (>800hz) -> Env
+	{filterDist, 0,filterX,0},
+  {filterDist, 0, LslOutL, 2},
+  {filterDist, 0, LslOutR, 2},
+
+	{filterX,2, modEnvL,0},  // Audio: filter HP (>800hz) -> Env
 	{modEnvL, 0, filterL, 0}, // Env -> modulation Filter L
-	{filterL, 0, LslOutL, 0}, // Filter -> Output L
+	{filterL, 1, LslOutL, 0}, // Filter -> Output L
 	{modLFO_L, 0, sum2_L, 0}, // mod source Offs+LFO
   {modOffsLR, 0, sum2_L, 1},
 	{sum2_L, 0, modEnvL, 1}, // mod amplitude
@@ -43,7 +46,7 @@ AudioConnection patchLsl[] = {
 
 	{filterX,2,modEnvR,0},   // Audio: filter HP (>800hz) -> Env
 	{modEnvR, 0, filterR, 0}, // Env -> modulation Filter
-	{filterR, 0, LslOutR, 0}, // Filter -> Ouput R
+	{filterR, 1, LslOutR, 0}, // Filter -> Ouput R
 	{modLFO_R, 0, sum2_R, 0}, //modulation Offs+LFO
   {modOffsLR, 0, sum2_R, 1},
 	{sum2_R, 0, modEnvR, 1},  // mod amplitude
@@ -59,15 +62,21 @@ AudioConnection patchLsl[] = {
 
 void SetLslDistortion(uint8_t dist){
 	float shdata[257];
-	float c=(float)dist/140; // dist=0..127 -> c=0...0.9
+	// float c=(float)dist/140; // dist=0..127 -> c=0...0.9
+  float c=(float)dist/135; // dist=0..127 -> c=0...0.98
+  float k=2*c/(1-c);
 
 	for (int ii=0; ii<257; ii++){
 		 float x=(float)(ii-128)/129;
-		 shdata[ii]=(1+c)*x-c/2*x*x*x;   //polynom (1+c)*x - c/2*x^3 - ...)
+		 // shdata[ii]=(1+c)*x-c/2*x*x*x;   //polynom (1+c)*x - c/2*x^3 - ...)
+     // if (x>0)
+     //  shdata[ii] +=-c/2*x*x;         // c/2*x*abs(x) (some 2nd harmonics)
+     // else
+     //  shdata[ii] += c/2*x*x;
      if (x>0)
-      shdata[ii] +=-c/2*x*x;         // c/2*x*abs(x) (some 2nd harmonics)
+      shdata[ii] = (1+k)*x/(1+k*x);
      else
-      shdata[ii] += c/2*x*x;
+      shdata[ii] = (1+k)*x/(1-k*x);
 	}
 	LslWavesh.shape(shdata,257);
 
@@ -106,27 +115,30 @@ void LeslieInit(){
     // delayTg.delay(1,2.2);  //delay Bs to right
 
     // Leslie X-filter
+    filterDist.frequency(7000); //Lowpassfilter
+    filterDist.resonance(0.7);
     filterX.frequency(800); //crossover frequency
+    filterX.resonance(0.7);
 
     //---Hi LFO - AM and filter modulation
     modOffsLR.amplitude(0.7);  //DC Offs
-    modLFO_L.amplitude(0.15);  //modulation depth
-    modLFO_R.amplitude(0.15);
-    modLFO_R.phase(1.2*90);   // phase diff L - R (1 = 90°)
+    modLFO_L.amplitude(0.4);  //modulation depth
+    modLFO_R.amplitude(0.4);
+    modLFO_R.phase(0.8*90);   // phase diff L - R (1 = 90°)
     sum2_L.gain(1); // add LFO+Offset DC
     sum2_R.gain(1);
 
-    filterL.frequency(4000);
-    filterL.resonance(0.9);
-    filterL.octaveControl(0.7); // modulation depth filter
+    filterL.frequency(2000);
+    filterL.resonance(0.8);
+    filterL.octaveControl(0.5); // modulation depth filter
 
-    filterR.frequency(4000);
-    filterR.resonance(0.9);
-    filterR.octaveControl(0.7);
+    filterR.frequency(2000);
+    filterR.resonance(0.8);
+    filterR.octaveControl(0.5);
 
     //--- Bass LFO - AM modulation
     modOffsBs.amplitude(0.7);
-    modLFO_Bs.amplitude(0.25);
+    modLFO_Bs.amplitude(0.15);
     sum2_Bs.gain(1); // add LFO+Offset DC
     delayBs.delay(0,0.5);  //delay Bs to left
     delayBs.delay(1,1.5);  //delay Bs to right

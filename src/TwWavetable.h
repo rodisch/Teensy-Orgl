@@ -88,7 +88,7 @@ const uint8_t rng_amp [8][9]={
   {16, 16, 16,  16,	14,	16,	16,	15,	15}
 };
 
-const uint8_t drawbar_scale[]={2, 12, 24, 40, 64,	91,	128, 181, 255}; // 3db-increment scale, 1st element='leakage'
+const uint8_t drawbar_scale[]={0, 12, 24, 40, 64,	91,	128, 181, 255}; // 3db-increment scale, 1st element='leakage'
 const uint8_t ph_offset[]={0,0,191,141,187,182,173,0,185,0,182,0,167,0,0,0,42}; //'random' phase offsets to reduce peak values of sum
 
 

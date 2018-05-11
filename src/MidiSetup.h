@@ -9,7 +9,8 @@
 #include "Leslie.h"
 #include "TwWavetable.h"
 
-const uint8_t midibase=9;
+// MIDI base channel
+const uint8_t midibase=13;
 
 // MIDI controller CC-numbers
 const uint8_t cc_drawbars[] = { 41, 42, 43, 44, 45, 46, 47, 48, 28 }; //9 Drawbars
@@ -38,17 +39,6 @@ const uint8_t cc_eqlow = 75; // eq hardware
 const uint8_t cc_eqhi = 76;  // eq hardware
 float eqlow = 0, eqhi = 0;
 
-//--- Helper functions
-float note2freq(uint8_t note) {
-	float tmp = (note - 69) / 12.0;
-	return 440.0 * pow(2.0, tmp);
-}
-
-float note2TWamp(uint8_t note) {
-	return double(TWamp[note] + 240) / 480;
-}
-
-
 //--- Note On --------------------------------------------------------------------
 void OnNoteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
 	uint8_t manualidx = channel-midibase; // 0:OM, 1:UM
@@ -64,12 +54,13 @@ void OnNoteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
 
 	//--- percussion
 	if ((manualidx==0) && (VoiceTab[0].GetIdleVoices() == VoiceTab[0].GetMaxVoices()) && (percnote > 0)) { //check  OM + no note is playing + perc on
-		double pfreq = (double) TWfreq[tonewheel-1 + percnote] / 10;
+		float pfreq = (float)(TWfreq[tonewheel-1 + percnote]) / 10;
+		float pamp =  (float)(TWamp[tonewheel-1 + percnote] + 240) / 480;
 		perc.frequency(pfreq);
-		perc.amplitude(note2TWamp(tonewheel-1 + percnote));
+		perc.amplitude(pamp);
 		percEnvelope.noteOn();
 		#ifdef _DEBUG
-		Serial.printf("\nPercussion: freq_%6.2f", pfreq);
+		Serial.printf("perc(freq_%6.2f amp_%4.2f) + ", pfreq, pamp);
 		#endif
 	}
 
@@ -100,6 +91,7 @@ void OnNoteOff(uint8_t channel, uint8_t note, uint8_t velocity) {
 		voiceNo += manualidx*8;
 		envelope[voiceNo].noteOff();
 	}
+
 	if ( (manualidx==0) && (VoiceTab[0].GetIdleVoices()==8) && percEnvelope.isActive() ) // Stop percussion if last note is released
 		percEnvelope.noteOff();
 
@@ -146,7 +138,7 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value) {
 
 	case cc_volume: {
 		float vol = (float) value/127;
-		TgOut.gain(manualidx,vol);
+		TgOut.gain(manualidx,powf(vol,4));  // make it logarithmic
 
 		#ifdef _DEBUG
 		Serial.printf("volume: manual_%i vol_%f",manualidx, vol);
@@ -171,7 +163,7 @@ void OnControlChange(uint8_t channel, uint8_t control, uint8_t value) {
 		// float vol = 0.04f*(float) value / 127;
 		// click.amplitude(vol);
 		float vol = (float) value / 127;
-		sumDb[manualidx].gain(8,vol);
+		sumDb[manualidx].gain(8,powf(vol,4));
 
 		#ifdef _DEBUG
 		Serial.printf("click: manual_%i vol_%3.2f",manualidx,vol);
