@@ -37,7 +37,7 @@ if ((tw < 1) || (tw>68)) return; // tw: fund tonewheel (8")
 	for (range_idx=0;range_idx<7;range_idx++){
 		if (tw<rng_key[range_idx+1]) {
 			break;
-   	}
+		}
 	}
   __disable_irq();
 	wave_data = waveTab->waveData[range_idx];

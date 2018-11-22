@@ -28,7 +28,7 @@ void setup() {
 	AudioInit();
 	LeslieInit();
 
-	// MIDI
+	// MIDI  -> MidiSetup.h
 	usbMIDI.setHandleNoteOff(OnNoteOff);
 	usbMIDI.setHandleNoteOn(OnNoteOn);
 	usbMIDI.setHandleControlChange(OnControlChange);
@@ -66,10 +66,6 @@ void loop() {
     Serial.println(")");
     last_time = millis();
 
-		// if (LslInputPk.available()){
-		// 	Serial.print("LslPeak = ");
-		// 	Serial.println(LslInputPk.read());
-		// }
   }
 	#endif
 

@@ -27,7 +27,8 @@ uint8_t percnote = 0;
 const uint8_t cc_lslspeed = 01; //Modulation -> Leslie speed
 const uint8_t cc_lslbal  = 24;
 const uint8_t cc_lsldist = 25;
-const uint8_t cc_click  = 26; // eq hardware
+
+const uint8_t cc_click  = 26; // keyclick volume
 
 const uint8_t cc_volume = 7;  // volume of TG upper/lower manual
 const uint8_t cc_expression = 11; // volume hardware via footpedal (range 0.4..0.9)
