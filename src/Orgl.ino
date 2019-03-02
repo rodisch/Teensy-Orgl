@@ -5,7 +5,7 @@ const int led = 13; // OnBoard LED Teensy
 #include "Leslie.h"
 #include "MidiSetup.h"
 
-#define _DEBUG
+//#define _DEBUG
 
 //--- Connect Tonegenerator and Leslie
 AudioConnection patchInst[] = {

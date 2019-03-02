@@ -80,7 +80,7 @@ void AudioInit(){
 	WaveTab[0].SetRegister(OM_initRegister);
 	WaveTab[1].SetRegister(UM_initRegister);
 
-//--- for each osc+envelope
+	//--- for each osc+envelope
 	for (int i=0; i<TOTAL_VOICES; ++i){
 		patchOsc[i]=new AudioConnection(osc[i],envelope[i]);
 		envelope[i].attack(0.7);
