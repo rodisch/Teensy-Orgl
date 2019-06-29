@@ -1,5 +1,8 @@
-/* Generate waveDatatables according to current drawbar settings
- * several versions are calculated due to (possible) foldback
+/* Generate waveDatatables according to current drawbar settings,
+ * 9 versions are calculated due to possible tonewheel foldback
+ * in the different keyboard ranges
+ *
+ * Roman Dischler 2018
  */
 
 #ifndef _TWWAVETABLE
@@ -58,11 +61,11 @@ const uint8_t TWamp[91]=
 		19,16,13,11,7,4,1,
 };
 
-// foldback key ranges, lowest key of range
 
+// foldback key ranges, lowest key of range
 const uint8_t rng_key[8]={1,13,28,44,49,52,56,61};
 
-// Multiplier for foldback of harmonics
+// Multipliers for foldback of harmonics
 const uint8_t rng_mult [8][9]={
 		{2,3,2,4,6,8,10,12,16},  // foldback lowend
 		{1,3,2,4,6,8,10,12,16},  // --low--
@@ -88,8 +91,8 @@ const uint8_t rng_amp [8][9]={
   {16, 16, 16,  16,	14,	16,	16,	15,	15}
 };
 
-const uint8_t drawbar_scale[]={0, 12, 24, 40, 64,	91,	128, 181, 255}; // 3db-increment scale, 1st element='leakage'
-const uint8_t ph_offset[]={0,0,191,141,187,182,173,0,185,0,182,0,167,0,0,0,42}; //'random' phase offsets to reduce peak values of sum
+const uint8_t drawbar_scale[]={0, 12, 24, 40, 64,	91,	128, 181, 255}; // drawbar position to amplitude scale, 3db-increment scale, 1st element='leakage'
+const uint8_t ph_offset[]={0,0,191,141,187,182,173,0,185,0,182,0,167,0,0,0,42}; //'random' phase offsets for harmonic 1..16 to reduce peak values of sum
 
 
 #endif

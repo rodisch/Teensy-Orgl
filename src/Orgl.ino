@@ -21,7 +21,7 @@ void setup() {
 
 	#ifdef _DEBUG
 	Serial.begin(115200);
-	Serial.print("/nTeensy Orgl1");
+	Serial.print("/nTeensy Orgl");
 	#endif
 
 	// Audio system
