@@ -2,6 +2,9 @@
 .piolibdeps
 .clang_complete
 .gcc-flags.json
+.build
+.pio
+.vscode
 
 lib/
 src/Release/
