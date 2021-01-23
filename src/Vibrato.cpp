@@ -1,6 +1,6 @@
 // Copyright (c) 2015 Peter Teichman
 //
-// Mofications of depth and speed by Roman Dischler 2018
+// Modifications of depth and speed by Roman Dischler 2018
 
 #include "Vibrato.h"
 

@@ -1,6 +1,4 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558 
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
@@ -10,6 +8,29 @@
                 "$platformio"
             ],
             "group": "build"
+        },
+        {
+            "type": "shell",
+            "label": "C/C++: arm-none-eabi-gcc.exe build active file",
+            "command": "C:/Users/Roman/.platformio/packages/toolchain-gccarmnoneeabi@1.50401.190816/bin/arm-none-eabi-gcc.exe",
+            "args": [
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "-mthumb",
+                "-mcpu=cortex-m4"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
         }
     ]
 }

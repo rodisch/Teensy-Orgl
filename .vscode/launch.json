@@ -13,6 +13,7 @@
             "request": "launch",
             "name": "PIO Debug",
             "executable": "c:/Users/Roman/Documents/PlatformIO/Projects/Teensy-Orgl/.pio/build/teensy31/firmware.elf",
+            "projectEnvName": "teensy31",
             "toolchainBinDir": "C:/Users/Roman/.platformio/packages/toolchain-gccarmnoneeabi@1.50401.190816/bin",
             "svdPath": "C:/Users/Roman/.platformio/platforms/teensy/misc/svd/MK20D5.svd",
             "preLaunchTask": {
@@ -26,6 +27,7 @@
             "request": "launch",
             "name": "PIO Debug (skip Pre-Debug)",
             "executable": "c:/Users/Roman/Documents/PlatformIO/Projects/Teensy-Orgl/.pio/build/teensy31/firmware.elf",
+            "projectEnvName": "teensy31",
             "toolchainBinDir": "C:/Users/Roman/.platformio/packages/toolchain-gccarmnoneeabi@1.50401.190816/bin",
             "svdPath": "C:/Users/Roman/.platformio/platforms/teensy/misc/svd/MK20D5.svd",
             "internalConsoleOptions": "openOnSessionStart"
