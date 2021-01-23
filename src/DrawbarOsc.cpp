@@ -31,7 +31,7 @@ void DrawbarOsc::Amplitude(float v) {
 void DrawbarOsc::FundamentalTw(uint8_t tw){
 if ((tw < 1) || (tw>68)) return; // tw: fund tonewheel (8")
 	float freq = (double) (TWfreq[tw-1])/10; // freq of 8"
-	tone_incr = freq/2 * (4294967296.0 / AUDIO_SAMPLE_RATE_EXACT); //wavetable is always 2 periods of fundamental (=1period of sub)
+	tone_incr = freq/2 * (4294967296.0 / AUDIO_SAMPLE_RATE_EXACT); //wavetable is always 2 periods of fundamental (1=period of sub)
 
 	int range_idx; //key range -> wavetable no.
 	for (range_idx=0;range_idx<7;range_idx++){
@@ -51,7 +51,7 @@ if ((tw < 1) || (tw>68)) return; // tw: fund tonewheel (8")
 void DrawbarOsc::update(void) {
     audio_block_t *block;
     uint32_t i, ph, inc, index, scale;
-    int32_t val1, val2;
+    int32_t z1, z2;
 
     if (tone_amp == 0) {
     	tone_phase += tone_phase * AUDIO_BLOCK_SAMPLES; //update phase
@@ -65,15 +65,15 @@ void DrawbarOsc::update(void) {
 
         for (i=0; i<AUDIO_BLOCK_SAMPLES; i++) {
         	index = ph >> 24;
-        	val1 = wave_data[index];
-        	val2 = wave_data[index+1];
+        	z1 = wave_data[index];
+        	z2 = wave_data[index+1];
         	scale = (ph >> 8) & 0xFFFF;
-        	val2 *= scale;
-        	val1 *= 0x10000 - scale;
+        	z2 *= scale;
+        	z1 *= 0x10000 - scale;
           #if defined(KINETISK)
-        	block->data[i] = multiply_32x32_rshift32(val1 + val2, tone_amp);
+        	block->data[i] = multiply_32x32_rshift32(z1 + z2, tone_amp);
           #elif defined(KINETISL)
-        	block->data[i] = (((val1 + val2) >> 16) * tone_amp) >> 16;
+        	block->data[i] = (((z1 + z2) >> 16) * tone_amp) >> 16;
           #endif
 
         	ph += inc;

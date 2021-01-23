@@ -10,23 +10,23 @@
 #include "TwWavetable.h"
 
 // MIDI base channel
-const uint8_t midibase=1;
+const uint8_t midibase=1; //Midi channel OM, LM=midibase+
 
 // MIDI controller CC-numbers
 const uint8_t cc_drawbars[] = { 41, 42, 43, 44, 45, 46, 47, 48, 28 }; //9 Drawbars
 const uint8_t cc_dbmin = 28;
 const uint8_t cc_dbmax = 48;
 
-const uint8_t cc_vibchor = 21;  //vib/chorus mode
+const uint8_t cc_vibchor = 21;  //vib/chorus mode: 64 off, 63..0: V1..V3, 65..127: C1..C3
 
-const uint8_t cc_percvol = 22;  //percussion volume
+const uint8_t cc_percvol = 22;  //percussion volume: 64 perc off, 63..0: vol 2nd, 65..127: vol 3rd
 const uint8_t cc_percdecay = 23; //percussion decay
 float percvol = 0.0;
 uint8_t percnote = 0;
 
 const uint8_t cc_lslspeed = 01; //Modulation -> Leslie speed
 const uint8_t cc_lslbal  = 24;
-const uint8_t cc_lsldist = 25;
+const uint8_t cc_lsldist = 25;  // Distortion
 
 const uint8_t cc_click  = 26; // keyclick volume
 
@@ -53,7 +53,7 @@ void OnNoteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
 		return;
 	}
 
-	//--- percussion
+	//--- Percussion
 	if ((manualidx==0) && (VoiceTab[0].GetIdleVoices() == VoiceTab[0].GetMaxVoices()) && (percnote > 0)) { //check  OM + no note is playing + perc on
 		float pfreq = (float)(TWfreq[tonewheel-1 + percnote]) / 10;
 		float pamp =  (float)(TWamp[tonewheel-1 + percnote] + 240) / 480;
@@ -65,7 +65,7 @@ void OnNoteOn(uint8_t channel, uint8_t note, uint8_t velocity) {
 		#endif
 	}
 
-	//--- tone
+	//--- Tone
 	if (VoiceTab[manualidx].GetIdleVoices() > 0) {
 		uint8_t voiceNo = VoiceTab[manualidx].NoteOn(note);
 		voiceNo += manualidx*8;

@@ -29,40 +29,40 @@ void Vibrato::update(void) {
         return;
     }
 
-    uint8_t loc_wp = wp;
-    uint32_t loc_phase = scan_phase;
+    uint8_t _wp = wp;  //local write pointer
+    uint32_t _phase = scan_phase;
 
     for (int i=0; i<AUDIO_BLOCK_SAMPLES; i++) {
         // Write the input audio to our delay line.
-        buf[loc_wp] = in->data[i];
+        buf[_wp] = in->data[i];
 
         // Read the delay line into the output buffer.
 
-        // 7 bits of loc_wp to 1..8; subtract triangle. This gives 5
+        // 7 bits of _wp to 1..8; subtract triangle. This gives 5
         // bits of sway on a 7 bit counter.
-        int32_t loc_rp = (loc_wp << 24) - (int32_t)(triangle(loc_phase) >> depth);
+        int32_t _rp = (_wp << 24) - (int32_t)(triangle(_phase) >> depth);
 
-        int16_t pos = loc_rp >> 24;
+        int16_t pos = _rp >> 24;
         int16_t a = buf[pos & 0x7f];
         int16_t b = buf[++pos & 0x7f];
-        int16_t val = lerp(a, b, (loc_rp >> 8) & 0xFFFF);
+        int16_t val = lerp(a, b, (_rp >> 8) & 0xFFFF);
         if (mix) {
           // val = ((int32_t)val + buf[loc_wp] ) >> 1 ;
-          val = ((int32_t)val + (buf[loc_wp]>>1) ) ; //RD changed balance wet/dry
+          val = ((int32_t)val + (buf[_wp]>>1) ) ; //RD changed balance wet/dry
         }
 
         out->data[i] = val;
 
-        // loc_phase += 679632; // speed of vibrato ~7Hz
-        loc_phase += 579632;    // RD: speed ~6Hz
+        // _phase += 679632; // speed of vibrato ~7Hz
+        _phase += 579632;    // RD: speed ~6Hz
 
         // Increment and wrap loc_wp.
-        loc_wp++;
-        loc_wp &= 0x7f;
+        _wp++;
+        _wp &= 0x7f;
     }
 
-    wp = loc_wp;
-    scan_phase = loc_phase;
+    wp = _wp;
+    scan_phase = _phase;
 
     transmit(out, 0);
     release(out);

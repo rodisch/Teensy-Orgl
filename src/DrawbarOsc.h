@@ -1,11 +1,10 @@
-// Copyright (c) 2015 Peter Teichman
+// DrawBar Oscillator
 
 #ifndef _DRAWBAROSC_H
 #define _DRAWBAROSC_H
 
 #include <Audio.h>
 #include "TwWavetable.h"
-
 
 class DrawbarOsc : public AudioStream {
 
