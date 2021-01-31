@@ -1,8 +1,8 @@
 
-.pio
-.vscode
-lib
-include
+.pio/
+.vscode/
+lib/
+include/
 
-src/obsolete
-xls
+src/obsolete/
+xls/
