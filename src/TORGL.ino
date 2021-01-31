@@ -1,13 +1,24 @@
 
-const int led = 13; // OnBoard LED Teensy
+/*
+A Tonewheel organ emulation for Teensy 3.1+Audio board
+based on ideas and code of 'roto2' of Peter Teichmann, https://github.com/pteichman/roto2
+
+New:
+- Generation of Wavetables with regard to fold over of tonewheels on high and sub registers
+- A flimsy Rotary emulation
+- Comprehensive MIDI-control
+*/
+
+
+//#define _DEBUG
 
 #include "AudioSetup.h"
 #include "Leslie.h"
 #include "MidiSetup.h"
 
-//#define _DEBUG
+const int led = 13; // OnBoard LED Teensy
 
-//--- Connect Tonegenerator and Leslie
+//--- Connections Tonegenerator, Leslie and I2S-output
 AudioConnection patchInst[] = {
 	{TgOut, 0, LslInput,0},   // -> input Leslie
 	{LslOutL, 0, i2s_out, 0}, // Output Leslie -> audioshield
@@ -32,7 +43,7 @@ void setup() {
 	usbMIDI.setHandleNoteOff(OnNoteOff);
 	usbMIDI.setHandleNoteOn(OnNoteOn);
 	usbMIDI.setHandleControlChange(OnControlChange);
-	/*
+	/* not implemented
 	 usbMIDI.setHandleVelocityChange(OnVelocityChange);
 	 usbMIDI.setHandleProgramChange(OnProgramChange);
 	 usbMIDI.setHandleAfterTouch(OnAfterTouch);
@@ -54,19 +65,19 @@ void loop() {
 	usbMIDI.read(); // USB MIDI receive
 
 	#ifdef _DEBUG
-  if(millis() - last_time >= 5000) {
-    Serial.print("\nProc = ");
-    Serial.print(AudioProcessorUsage());
-    Serial.print(" (");
-    Serial.print(AudioProcessorUsageMax());
-    Serial.print("),  Mem = ");
-    Serial.print(AudioMemoryUsage());
-    Serial.print(" (");
-    Serial.print(AudioMemoryUsageMax());
-    Serial.println(")");
-    last_time = millis();
-
-  }
+	if (millis() - last_time >= 5000)
+	{
+		Serial.print("\nProc = ");
+		Serial.print(AudioProcessorUsage());
+		Serial.print(" (");
+		Serial.print(AudioProcessorUsageMax());
+		Serial.print("),  Mem = ");
+		Serial.print(AudioMemoryUsage());
+		Serial.print(" (");
+		Serial.print(AudioMemoryUsageMax());
+		Serial.println(")");
+		last_time = millis();
+	}
 	#endif
 
 	// LED as clipping indicator

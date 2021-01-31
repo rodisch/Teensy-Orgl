@@ -24,8 +24,8 @@ const uint8_t cc_percdecay = 23; //percussion decay
 float percvol = 0.0;
 uint8_t percnote = 0;
 
-const uint8_t cc_lslspeed = 01; //Modulation -> Leslie speed
-const uint8_t cc_lslbal  = 24;
+const uint8_t cc_lslspeed = 01; // Modulation = Leslie speed
+const uint8_t cc_lslbal  = 24;  // 0:dry..127:wet
 const uint8_t cc_lsldist = 25;  // Distortion
 
 const uint8_t cc_click  = 26; // keyclick volume

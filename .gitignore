@@ -5,5 +5,5 @@
 .vscode/launch.json
 .vscode/ipch
 
-src/obsolete/
-xls/
+src/obsolete
+xls
