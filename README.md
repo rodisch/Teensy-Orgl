@@ -1,6 +1,6 @@
 # T-ORGL
 
-## A Tonewheel organ emulation for Teensy 3.2 + Audio board
+A Tonewheel organ emulation for Teensy 3.2 + Audio board
 based on ideas and code of 'roto2' of Peter Teichmann, https://github.com/pteichman/roto2
 
 - 2 parts as upper- and lower manual, with independent drawbar settings
